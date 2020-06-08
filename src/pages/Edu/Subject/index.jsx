@@ -7,7 +7,14 @@ import "./index.less";
 /* 
 静态组件
  */
-
+/* 
+笔记:
+1.如果找数据的话:
+来源:自己模拟(mook) \后台接口直接使用
+2.后台给前台=>接口的地址,数据,参数
+3.参考文档进行开发
+4.自己写服务器模拟数据
+*/
 export default class Subject extends Component {
   render() {
     const columns = [
