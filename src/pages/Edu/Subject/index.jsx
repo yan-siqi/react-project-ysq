@@ -22,9 +22,10 @@ export default class Subject extends Component {
     subjects: {
       total: 0,
       items: [],
-      limit: 5,
+
       currentpage: 1, //定义当前页
     },
+    limit: 5,
   };
 
   componentDidMount() {
@@ -33,9 +34,10 @@ export default class Subject extends Component {
     this.setState({
       subjects:result
     }); */
-   // const result = await reqGetSubjectList(page, limit);
+    // const result = await reqGetSubjectList(page, limit);
     // this.getSubjectList(page, limit);
-    this.getSubjectList(1,10);
+    const { page, limit } = this.state;
+    this.getSubjectList(page, limit);
   }
   getSubjectList = async (page, limit) => {
     //发送请求,异步获取一级分类列表
@@ -48,7 +50,7 @@ export default class Subject extends Component {
     });
   };
   render() {
-    const { subjects } = this.state;
+    const { subjects, limit } = this.state;
     const columns = [
       { title: "分类名称", dataIndex: "title", key: "name" },
       {
@@ -58,7 +60,7 @@ export default class Subject extends Component {
         width: 200,
         render: () => (
           <>
-            <Button type="primary">
+            <Button type="primary" alt="=编辑">
               <FormOutlined />
             </Button>
             <Button type="danger" className="subject-btn">
@@ -128,8 +130,8 @@ export default class Subject extends Component {
             showSizeChanger: true,
             pageSizeOptions: ["5", "10", "15", "20"],
             //pageSize: subjects.limit,
-            defaultPageSize: subjects.limit,
-
+            // defaultPageSize: subjects.limit,
+            defaultPageSize: limit,
             //绑定事件 当前页码发生变化的回调
             onChange: this.getSubjectList, //当页码发生变化时触发的回调函数
             onShowSizeChange: this.getSubjectList,
