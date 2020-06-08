@@ -22,6 +22,8 @@ export default class Subject extends Component {
     subjects: {
       total: 0,
       items: [],
+      limit: 5,
+      currentpage: 1, //定义当前页
     },
   };
 
@@ -31,13 +33,15 @@ export default class Subject extends Component {
     this.setState({
       subjects:result
     }); */
-    this.getSubjectList(1, 10);
+   // const result = await reqGetSubjectList(page, limit);
+    // this.getSubjectList(page, limit);
+    this.getSubjectList(1,10);
   }
   getSubjectList = async (page, limit) => {
     //发送请求,异步获取一级分类列表
     const result = await reqGetSubjectList(page, limit);
-    console.log('11111');
-    
+    console.log("11111");
+
     //更新数据
     this.setState({
       subjects: result,
@@ -118,13 +122,17 @@ export default class Subject extends Component {
           rowKey="_id"
           //数据分页展示:
           pagination={{
+            current: subjects.page,
             total: subjects.total, //是分页器的总数
             showQuickJumper: true, //快速跳转
             showSizeChanger: true,
-            showSizeOptions: ["5", "10","15"],
-             defaultPageSize:10,
+            pageSizeOptions: ["5", "10", "15", "20"],
+            //pageSize: subjects.limit,
+            defaultPageSize: subjects.limit,
+
             //绑定事件 当前页码发生变化的回调
             onChange: this.getSubjectList, //当页码发生变化时触发的回调函数
+            onShowSizeChange: this.getSubjectList,
           }}
         />
       </div>
