@@ -2,7 +2,9 @@ import React, { Component } from "react";
 //从 antd中引入样式button
 import { Button, Table } from "antd";
 //引icon图标
-import {PlusOutlined,FormOutlined,DeleteOutlined} from '@ant-design/icons'
+import { PlusOutlined, FormOutlined, DeleteOutlined } from "@ant-design/icons";
+import { reqGetSubjectList } from "@api/edu/subject";
+// import { reqGetSubjectList } from "../../../api/edu/subject";
 import "./index.less";
 /* 
 静态组件
@@ -16,16 +18,54 @@ import "./index.less";
 4.自己写服务器模拟数据
 */
 export default class Subject extends Component {
-  render() {
-    const columns = [
-      { title: "分类名称", dataIndex: "name", key: "name" },
-      { title: "操作", dataIndex: "", key: "action", width:200 , render: () => <>
-      <Button type="primary"><FormOutlined /></Button>
-      <Button type="danger" className='subject-btn'><DeleteOutlined /></Button>
-      </> },
-    ];
+  state = {
+    subjects: {
+      total: 0,
+      items: [],
+    },
+  };
+
+  componentDidMount() {
+    /*    const result = await reqGetSubjectList(1, 10);
+    //更新数据
+    this.setState({
+      subjects:result
+    }); */
+    this.getSubjectList(1, 10);
+  }
+  getSubjectList = async (page, limit) => {
+    //发送请求,异步获取一级分类列表
+    const result = await reqGetSubjectList(page, limit);
+    console.log('11111');
     
-    const data = [
+    //更新数据
+    this.setState({
+      subjects: result,
+    });
+  };
+  render() {
+    const { subjects } = this.state;
+    const columns = [
+      { title: "分类名称", dataIndex: "title", key: "name" },
+      {
+        title: "操作",
+        dataIndex: "",
+        key: "action",
+        width: 200,
+        render: () => (
+          <>
+            <Button type="primary">
+              <FormOutlined />
+            </Button>
+            <Button type="danger" className="subject-btn">
+              <DeleteOutlined />
+            </Button>
+          </>
+        ),
+      },
+    ];
+
+    /*   const data = [
       {
         key: 1,
         name: "John Brown",
@@ -57,10 +97,10 @@ export default class Subject extends Component {
         description:
           "My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.",
       },
-    ];
+    ]; */
     return (
       <div className="subject">
-        <Button type="primary" className='subject-btn'>
+        <Button type="primary" className="subject-btn">
           <PlusOutlined />
           新建
         </Button>
@@ -74,7 +114,18 @@ export default class Subject extends Component {
             ),
             rowExpandable: (record) => record.name !== "Not Expandable",
           }}
-          dataSource={data}
+          dataSource={subjects.items}
+          rowKey="_id"
+          //数据分页展示:
+          pagination={{
+            total: subjects.total, //是分页器的总数
+            showQuickJumper: true, //快速跳转
+            showSizeChanger: true,
+            showSizeOptions: ["5", "10","15"],
+             defaultPageSize:10,
+            //绑定事件 当前页码发生变化的回调
+            onChange: this.getSubjectList, //当页码发生变化时触发的回调函数
+          }}
         />
       </div>
     );
