@@ -57,7 +57,7 @@
 - 请求数据
 - 发请求获取数据:`const result = await reqGetSubjectList(page, limit);`
 - 更新数据:`使用this.setState()`来进行数据更新
-- 数据的分页展示:(笔记暂不整理...)
+- 数据的分页展示:(onShowSizeChange: getSubjectList,根据每页显示的数量的改变重新获取列表数据显示)
 
 ## 创建服务(偏向于后台)
 
