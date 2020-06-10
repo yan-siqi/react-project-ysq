@@ -20,6 +20,7 @@ const Teacher = () => lazy(() => import("@pages/Edu/Teacher"));
 const Settings = () => lazy(() => import("@pages/User/Settings"));
 const Center = () => lazy(() => import("@pages/User/Center"));
 //const Testxiaoyan=()=>lazy(()=>import('@pages/Edu/Test-xiaoyan/components/index.jsx'))
+const AddSubject = () => lazy(() => import("@pages/Edu/Subject/components/AddSubject/index.jsx"));
 export default {
   Admin,
   User,
@@ -35,5 +36,6 @@ export default {
   Subject,
   Teacher,
   Settings,
-  Center
+  Center,
+  AddSubject
 };
