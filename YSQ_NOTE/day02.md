@@ -77,3 +77,13 @@
                   {subject.title}
                 </Option>`
   - subjects.map()不是一个方法,实际是subject有问题,解决:在Subject/redux/action.js中获取一级课程分类数据时候里边的return返回请求成功的数据:response.items
+
+## 复习
+
+- 显示二级菜单 
+  - 属性expandable函数=>expandedRowKesy 决定谁(id唯一标识)展开,在当前组件中定义一个状态 只在自己组建中使用
+  - 数据要动态请求:只要有children才会展开,所以需要添加children属性,会有展开的图标
+  - 展开的时候才会发请求,闭合的时候不会发请求
+
+- 添加
+  - 在antd中 推荐使用工厂函数组件 来实现form表单
