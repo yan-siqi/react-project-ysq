@@ -5,8 +5,8 @@
 //同步:不需要发请求 异步需要发请求
 
 //引入一级二级分类
-import { reqGetSubjectList, reqGetSubSubjectList } from "@api/edu/subject";
-import { GET_SUBJECT_LIST, GET_SUB_SUBJECT_LIST } from "./constants";
+import { reqGetSubjectList, reqGetSubSubjectList,reqUpdateSubject } from "@api/edu/subject";
+import { GET_SUBJECT_LIST, GET_SUB_SUBJECT_LIST,UPDATE_SUBJECT } from "./constants";
 //同步
 const getSubjectListSync = (subjectList) => ({
   type: GET_SUBJECT_LIST,
@@ -37,6 +37,22 @@ export const getSubSubjectList = (parentId) => {
     });
   };
 };
+//同步获取更新数据
+const updateSubjectSync=(subject)=>({
+  type: UPDATE_SUBJECT,
+  data:subject
+})
+export const updateSubject=(title,id)=>{
+  return (dispatch) => {
+    return reqUpdateSubject(title,id).then((response) => {
+      const subject={title,_id:id}
+      dispatch(updateSubjectSync(subject))
+      return subject;
+    });
+  };
+}
+
+//
 /*
 正常情况异步action没有返回值 
 如果外部想要使用内部的值,需要返回一个promise的值 使用return

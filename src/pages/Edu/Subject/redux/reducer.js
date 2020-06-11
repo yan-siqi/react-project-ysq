@@ -1,5 +1,5 @@
 //根据原来的数据和action生成新的状态
-import { GET_SUBJECT_LIST,GET_SUB_SUBJECT_LIST } from "./constants";
+import { GET_SUBJECT_LIST,GET_SUB_SUBJECT_LIST,UPDATE_SUBJECT } from "./constants";
 //看请求回来的对象 初始化数据所对应的形式 是对象的
 const initSubjectList = {
   total: 0,
@@ -33,7 +33,29 @@ export default function subjectList(prevState = initSubjectList, action) {
           return subject;
         }),
       };
-    default:
+    case UPDATE_SUBJECT:
+      return{
+        total:prevState.total,
+        items:prevState.items.map((subject)=>{
+          if(subject._id===action.data._id){
+            return{
+              ...subject,//将元数据展开
+              ...action.data,//展开新数据 此时元数据会被覆盖
+            }
+          }
+          subject.children=subject.children.map((item)=>{
+            if(item._id===action.data._id){
+              return {
+                ...item,
+                ...action.data,
+              }
+            }
+            return item
+          })
+          return subject
+        })
+      }
+      default:
       return prevState;
   }
 }

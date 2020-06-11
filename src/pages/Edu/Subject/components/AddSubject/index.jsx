@@ -11,7 +11,7 @@ const { Option } = Select;
 let page = 1;
 function AddSubject({ total, getSubjectList, history }) {
   const [subjects, setSubjects] = useState([]);
-  console.log(subjects)
+  //console.log(subjects)
   //表单校验成功
   const onFinish = async (values) => {
     const { title, parentId } = values;
@@ -23,6 +23,7 @@ function AddSubject({ total, getSubjectList, history }) {
   //const onFinishFailed = () => {};
   //定义工厂函数组件
   useEffect(() => {
+    page=1;//下次再访问重新进来 不会重复加载
     const fetchData = async () => {
       const items = await getSubjectList(page++, 10);
       //更新状态

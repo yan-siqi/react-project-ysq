@@ -1,10 +1,16 @@
 import React, { Component } from "react";
 //从 antd中引入样式button
-import { Button, Table } from "antd";
+import { Button, Table, Tooltip, Input, message, Modal } from "antd";
 //引icon图标
-import { PlusOutlined, FormOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { connect } from "react-redux";
-import { getSubjectList, getSubSubjectList } from "./redux";
+import { getSubjectList, getSubSubjectList, updateSubject } from "./redux";
+import { reqDelSubject } from "@api/edu/subject";
 import "./index.less";
 //使用装饰器语法
 
@@ -15,46 +21,24 @@ import "./index.less";
   {
     getSubjectList, //获取更新一级分类列表数据的方法
     getSubSubjectList, //获取更新二级分类列表数据的方法
+    updateSubject, //
   }
 )
-/* 
-静态组件
- */
-/* 
-笔记:
-1.如果找数据的话:
-来源:自己模拟(mook) \后台接口直接使用
-2.后台给前台=>接口的地址,数据,参数
-3.参考文档进行开发
-4.自己写服务器模拟数据
-*/
 class Subject extends Component {
   state = {
     expandedRowKeys: [],
+    subjectId: "", //要更新的分类id
+    subjectTitle: "", //要更新的分类数据标题
+    updateSubjectTitle: "", //正在更新的标题数据
+    current: 1,
+    pageSize: 10, //设置每页条数
   };
-  async componentDidMount() {
-    /*    const result = await reqGetSubjectList(1, 10);
-    //更新数据
-    this.setState({
-      subjects:result
-    }); */
-    // const result = await reqGetSubjectList(page, limit);
-    // this.getSubjectList(page, limit);
-    //const { page, limit } = this.state;
-    try {
-      await this.props.getSubjectList(1, 10);
-    } catch (err) {
-      //此时返回失败的promise
-    }
+  componentDidMount() {
+    //请求第一页数据
+    this.getSubjectList(1, 10);
   }
-  handleExpend = (expanded, record) => {
-    //进行判断
-    if (!expanded) return;
-    //请求二级菜单数据/展开一级菜单数据
-    this.props.getSubSubjectList(record._id); //通过id标识获取数据
-  };
+  //展开一级菜单项
   handleExpandedRowsChange = (expandedRowKeys) => {
-    console.log("handleExpandedRowsChange", expandedRowKeys);
     const length = expandedRowKeys.length;
     if (length > this.state.expandedRowKeys.length) {
       //如果长度大于之前的长度,说明是展开分类列表
@@ -68,46 +52,170 @@ class Subject extends Component {
       expandedRowKeys,
     });
   };
-  //getSubjectList = async (page, limit) => {
-  //发送请求,异步获取一级分类列表
-  // const result = await reqGetSubjectList(page, limit);
-  //console.log("11111");
+  //解决第二页切换时每页数量显示不正确的问题
+  getFirstPageSubjectList = (page, limit) => {
+    //  this.props.getSubjectList(1, limit);
+    this.getSubjectList(1, limit);
+  };
+  //显示添加界面
+  showAddSubject = () => {
+    this.props.history.push("/edu/subject/add");
+  };
+  //显示更新课程分类接麦你
+  showUpdateSubject = (subject) => {
+    return () => {
+      //判断
+      if (this.state.subjectId) {
+        message.warn("已经存在了,请更新当前课程分类");
+        return;
+      }
+      this.setState({
+        subjectId: subject._id,
+        subjectTitle: subject.title,
+      });
+    };
+  };
+  //收集更新分类的标题数据
+  handleInputChange = (e) => {
+    this.setState({
+      updateSubjectTitle: e.target.value,
+    });
+  };
 
-  //更新数据
-  //this.setState({
-  // subjects: result,
-  //});
-  //};
- //显示添加界面
-  showAddSubject=()=>{
-    this.props.history.push('/edu/subject/add')
-  }
+  //更新课程分类数据
+  updateSubject = async () => {
+    const { subjectId, updateSubjectTitle, subjectTitle } = this.state;
+    if (!updateSubjectTitle) {
+      message.warn("请更新有效数据");
+      return;
+    }
+    if (updateSubjectTitle === subjectTitle) {
+      message.warn("更新的分类标题不能和之前的一样");
+      return;
+    }
+    await this.props.updateSubject(updateSubjectTitle, subjectId);
+    //提示文本
+    message.success("更新数据成功");
+    this.cancel();
+  };
+  //取消课程分类
+  cancel = () => {
+    //跟新数据将所有的数据清空
+    this.setState({
+      subjectId: "",
+      updateSubjectTitle: "",
+    });
+  };
+  delSubject = (subject) => {
+    return () => {
+      Modal.confirm({
+        title: (
+          <p>
+            你确定要删除吗<span className="subject-text">{subject.title}</span>
+            {""} 课程分类吗
+          </p>
+        ),
+        icon: <ExclamationCircleOutlined />,
+        onOk: async () => {
+          await reqDelSubject(subject._id);
+          message.success("删除陈功");
+          const { current, pageSize } = this.state;
+          if (
+            current > 1 &&
+            this.props.subjectList.items.length === 1 &&
+            subject.parentId === "0"
+          ) {
+            this.getSubjectList(current - 1, pageSize);
+            return;
+          }
+          this.getSubjectList(current, pageSize);
+        },
+      });
+    };
+  };
+  getSubjectList = (page, limit) => {
+    this.setState({
+      current: page,
+      pageSize: limit,
+    });
+    return this.props.getSubjectList(page, limit);
+  };
   render() {
-    const { subjectList, getSubjectList } = this.props;
-    const {expandedRowKeys} =this.state
+    const { subjectList } = this.props;
+    const { expandedRowKeys, current, pageSize } = this.state;
     const columns = [
-      { title: "分类名称", dataIndex: "title", key: "name" },
+      {
+        title: "分类名称",
+        key: "title",
+        render: (subject) => {
+          const { subjectId } = this.state;
+          //得到当前渲染的分类id
+          const id = subject._id;
+          if (subjectId === id) {
+            return (
+              <Input
+                className="subject-input"
+                defaultValue={subject.title}
+                onChange={this.handleInputChange}
+              />
+            );
+          }
+          return <span>{subject.title}</span>;
+        },
+      },
       {
         title: "操作",
         dataIndex: "",
         key: "action",
         width: 200,
-        render: () => (
-          <>
-            <Button type="primary" alt="=编辑">
-              <FormOutlined />
-            </Button>
-            <Button type="danger" className="subject-btn">
-              <DeleteOutlined />
-            </Button>
-          </>
-        ),
+        render: (subject) => {
+          const { subjectId } = this.state;
+          const id = subject._id;
+          if (subjectId === id) {
+            return (
+              <>
+                <Button type="primary" onClick={this.updateSubject}>
+                  确认
+                </Button>
+                <Button className="subject-btn" onClick={this.cancel}>
+                  取消
+                </Button>
+              </>
+            );
+          }
+          return (
+            <>
+              <Tooltip title="编辑课程分类">
+                <Button
+                  type="primary"
+                  alt="=编辑"
+                  onClick={this.showUpdateSubject(subject)}
+                >
+                  <FormOutlined />
+                </Button>
+              </Tooltip>
+              <Tooltip title="删除课程分类">
+                <Button
+                  type="danger"
+                  className="subject-btn"
+                  onClick={this.delSubject(subject)}
+                >
+                  <DeleteOutlined />
+                </Button>
+              </Tooltip>
+            </>
+          );
+        },
       },
     ];
 
     return (
       <div className="subject">
-        <Button type="primary" className="subject-btn" onClick={this.showAddSubject}>
+        <Button
+          type="primary"
+          className="subject-btn"
+          onClick={this.showAddSubject}
+        >
           <PlusOutlined />
           新建
         </Button>
@@ -117,34 +225,14 @@ class Subject extends Component {
             //决定列是否可以展开
             //决定行展开
             expandedRowKeys,
-            //展开行之后会触发的方法,将[]中的内容作为参数传入
             onExpandedRowsChange: this.handleExpandedRowsChange,
-            // expandedRowRender: (record) => {
-            //   //判断有儿子没
-            //   const children = record.children ? record.children : [];
-            //   return children.map((subSubject) => {
-            //     return (
-            //       <div key={subSubject._id} className="sub-subject-row">
-            //         <div>{subSubject.title}</div>
-            //         <div className="sub-subject-row-right">
-            //           <Button type="primary">
-            //             <FormOutlined />
-            //           </Button>
-            //           <Button type="danger" className="subject-btn">
-            //             <DeleteOutlined />
-            //           </Button>
-            //         </div>
-            //       </div>
-            //     );
-            //   });
-            // },
-            // onExpand: this.handleExpend,
           }}
           dataSource={subjectList.items}
           rowKey="_id"
           //数据分页展示:
           pagination={{
-            // current: subjects.page,
+            current,
+            pageSize,
             total: subjectList.total, //是分页器的总数
             showQuickJumper: true, //快速跳转
             showSizeChanger: true,
@@ -153,8 +241,8 @@ class Subject extends Component {
             // defaultPageSize: subjects.limit,
             defaultPageSize: 10,
             //绑定事件 当前页码发生变化的回调
-            onChange: getSubjectList, //当页码发生变化时触发的回调函数
-            onShowSizeChange: getSubjectList,
+            onChange: this.getSubjectList, //当页码发生变化时触发的回调函数
+            onShowSizeChange: this.getFirstPageSubjectList,
           }}
         />
       </div>

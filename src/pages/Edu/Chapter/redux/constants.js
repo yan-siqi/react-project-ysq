@@ -1,0 +1,1 @@
+export const GET_ALL_COURSE_LIS='GET_ALL_COURSE_LIST'
