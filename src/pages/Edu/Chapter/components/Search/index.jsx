@@ -12,7 +12,10 @@ function Search({ getAllCourseList, allCourseList }) {
   const finish = () => {};
   const resetForm = () => {
     form.resetFields(); //将所有表单项重置
+    //form.resetFields(['title']); //查询对应的表单项
   };
+  console.log(allCourseList);
+  
   useEffect(() => {
     getAllCourseList();
   }, [getAllCourseList]);
