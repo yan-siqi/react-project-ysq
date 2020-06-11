@@ -1,6 +1,6 @@
-import {reqGetALlCourseList} from  '@api/edu/course'
+import {reqGetAllCourseList} from  '@api/edu/course'
 import {GET_ALL_COURSE_LIST} from './constants'
-import { response } from 'express'
+//import { response } from 'express'
 //请求数据
 const getAllCourseListSync=(courseList)=>({
     type:GET_ALL_COURSE_LIST,
@@ -8,7 +8,7 @@ const getAllCourseListSync=(courseList)=>({
 })
 export const getAllCourseList=()=>{
     return (dispatch)=>{
-        return reqGetALlCourseList().then((response)=>{
+        return reqGetAllCourseList().then((response)=>{
             dispatch(getAllCourseListSync(response))
             return response
         })

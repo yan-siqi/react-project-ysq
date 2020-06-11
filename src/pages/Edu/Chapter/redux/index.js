@@ -1,3 +1,3 @@
 import chapter from './reducer'
-import {getAllCousreList} from './actions'
-export {chapter,getAllCousreList}
+import {getAllCourseList} from './actions'
+export {chapter,getAllCourseList}
