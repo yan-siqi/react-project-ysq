@@ -37,7 +37,7 @@ export default function AddLesson({ location, history }) {
           <Input />
         </Form.Item>
 
-        <Form.Item label="是否免费" name="free" valuePropName="checked">
+        <Form.Item label="是否免费" name="free" valuePropName="checked" rules={[{ required: true, message: "请输入课时名称~" }]}>
           <Switch checkedChildren="是" unCheckedChildren="否" defaultChecked />
         </Form.Item>
 

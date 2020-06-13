@@ -30,7 +30,7 @@ function Search({ getAllCourseList, allCourseList, getChapterList }) {
       form={form}
     >
       <Form.Item
-        lable="选择课程"
+        label="选择课程"
         name="courseId"
         rules={[{ required: true, message: "请选择课程" }]}
       >
