@@ -1,5 +1,5 @@
 import request from "@utils/request";
-import { chapter } from "../../pages/Edu/Chapter/redux";
+//import { chapter } from "../../pages/Edu/Chapter/redux";
 
 // 模块请求公共前缀
 const BASE_URL = "/admin/edu/lesson";
@@ -11,22 +11,32 @@ export function reqGetLessonList(chapterId) {
 }
 
 //获取所有的课程数据
-export function reqGetLessonlist (chapterId){
+export function reqGetLessonlist(chapterId) {
   return request({
-    url:`${BASE_URL}/get/${chapterId}`,
-    method:'GET'
-  })
+    url: `${BASE_URL}/get/${chapterId}`,
+    method: "GET",
+  });
 }
 //新增课时数据
-export function reqAddLesson({chapterId,title,free,video}){
-  return request ({
-    url:`${BASE_URL}/save`,
-    method:'POST',
-    data:{
+export function reqAddLesson({ chapterId, title, free, video }) {
+  return request({
+    url: `${BASE_URL}/save`,
+    method: "POST",
+    data: {
       chapterId,
       title,
       free,
-      video
-    }
-  })
+      video,
+    },
+  });
 }
+//删除多个课时列表信息
+/* export function reqBatchRemoveLessonList(idList) {
+  return request({
+    url: `${BASE_URL}/batchRemove`,
+    method: "DELETE",
+    data: {
+      idList,
+    },
+  });
+} */

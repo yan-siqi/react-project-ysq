@@ -6,8 +6,17 @@ export function reqGetChapterList({ page, limit, courseId }) {
     url: `${BASE_URL}/${page}/${limit}`,
     method: "GET",
     params: {
-      // query参数
       courseId,
+    },
+  });
+}
+//请求删除多个章节列表
+export function reqBatchRemoveChapterList(idList) {
+  return request({
+    url: `${BASE_URL}/batchRemove`,
+    method: "DELETE",
+    data: {
+      idList,
     },
   });
 }

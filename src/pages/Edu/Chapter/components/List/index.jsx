@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button,Tooltip, Alert, Table,Modal } from "antd";
+import { Button, Tooltip, Alert, Table, Modal, message } from "antd";
 import {
   PlusOutlined,
   FullscreenOutlined,
@@ -12,15 +12,22 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import Player from "griffith";
-import { getLessonList } from "../../redux";
+import { getLessonList,
+ // batchRemoveLessonList 
+} from "../../redux";
 import "./index.less";
 @withRouter
-@connect((state) => ({ chapters: state.chapter.chapters }), { getLessonList })
+@connect((state) => ({ chapters: state.chapter.chapters }), {
+  getLessonList,
+  //batchRemoveLessonList,
+})
 class List extends Component {
   state = {
     expandedRowKeys: [],
+    selectedRowKeys: [], //选中的列表项
     isShowVideoModal: false, //控制model的显示和隐藏
     lesson: {}, //显示数据
+    
   };
   handleExpandedRowsChange = (expandedRowKeys) => {
     const length = expandedRowKeys.length;
@@ -32,6 +39,35 @@ class List extends Component {
       expandedRowKeys,
     });
   };
+  //selectrowkeys**
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({
+      selectedRowKeys, //进行数据更新
+    });
+  };
+  //在删除所有选中项的话
+  //只需要找章节id 将他过滤掉,删除其余的课时id
+  batchRemove = async () => {
+    const { selectedRowKeys } = this.state;
+    const {
+      chapters: { items: chapters }, //对chapters进行解构赋值
+      batchRemoveLessonList,
+    } = this.props;
+    const ids = Array.from(selectedRowKeys);
+    const chapterIds = []; //获取章节的id列表
+    chapters.forEach((chapter) => {
+      //对chapters进行遍历
+      //const id=chapter._id
+      const index = ids.indexOf(chapter._id); //判断数组中是否存在一个元素,存在返回小标
+      //说明找到了
+      if (index > -1) {
+        const [id] = ids.splice(index, 1);
+        chapterIds.push(id);
+      }
+    });
+    await batchRemoveLessonList(ids)//批量删除数据
+    message.success('删除数据成功...')
+  };
   //显示添加课程
   //使用withRouter来实现路由的三大属性
   showAddLesson = (chapter) => {
@@ -40,7 +76,6 @@ class List extends Component {
     };
   };
   showVideoModal = (lesson) => {
-    
     return () => {
       this.setState({
         isShowVideoModal: true,
@@ -56,7 +91,7 @@ class List extends Component {
   };
   render() {
     const { chapters } = this.props;
-    const { expandedRowKeys, isShowVideoModal, lesson } = this.state;
+    const { expandedRowKeys, isShowVideoModal, lesson,selectedRowKeys } = this.state;
     const columns = [
       {
         title: "名称",
@@ -128,7 +163,7 @@ class List extends Component {
               <PlusOutlined />
               新增
             </Button>
-            <Button type="danger">批量删除</Button>
+            <Button type="danger" onClick={this.batchRemove}>批量删除</Button>
             <Tooltip title="全屏">
               <FullscreenOutlined />
             </Tooltip>
@@ -140,10 +175,14 @@ class List extends Component {
             </Tooltip>
           </div>
         </div>
-        <Alert message="已经选择0项" type="info" showIcon />
+        <Alert message={`已经选择${selectedRowKeys.length}项`} type="info" showIcon />
         <Table
           className="chapter-list-table"
           columns={columns} // 决定列头
+          rowSelection={{//左边的勾选框
+           selectedRowKeys,
+            onChange: this.onSelectChange,
+          }}
           expandable={{
             // 内部默认会使用children作为展开的子菜单
             // 也就是说，如果要展开的数据有children属性，才会有展开图标，就会作为子菜单展开~
@@ -166,14 +205,14 @@ class List extends Component {
           }}
         />
         <Modal
-          title={lesson.title}//设置标题
-          visible={isShowVideoModal}//是否显示
-          onCancel={this.hidden}//
+          title={lesson.title} //设置标题
+          visible={isShowVideoModal} //是否显示
+          onCancel={this.hidden} //
           footer={null}
-          centered//垂直居中
-          destroyOnClose={true}//model关闭是销毁子元素
+          centered //垂直居中
+          destroyOnClose={true} //model关闭是销毁子元素
         >
-          <Player sources={{hd:{play_url:lesson.video}}} />
+          <Player sources={{ hd: { play_url: lesson.video } }} />
         </Modal>
       </div>
     );
