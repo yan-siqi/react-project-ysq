@@ -12,14 +12,12 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import Player from "griffith";
-import { getLessonList,
- // batchRemoveLessonList 
-} from "../../redux";
+import screenfull from "screenfull";//引入控制全屏的插件库
+import { getLessonList, batchRemoveLessonList } from "../../redux";
 import "./index.less";
 @withRouter
 @connect((state) => ({ chapters: state.chapter.chapters }), {
-  getLessonList,
-  //batchRemoveLessonList,
+  getLessonList,batchRemoveLessonList,
 })
 class List extends Component {
   state = {
@@ -27,7 +25,6 @@ class List extends Component {
     selectedRowKeys: [], //选中的列表项
     isShowVideoModal: false, //控制model的显示和隐藏
     lesson: {}, //显示数据
-    
   };
   handleExpandedRowsChange = (expandedRowKeys) => {
     const length = expandedRowKeys.length;
@@ -65,8 +62,8 @@ class List extends Component {
         chapterIds.push(id);
       }
     });
-    await batchRemoveLessonList(ids)//批量删除数据
-    message.success('删除数据成功...')
+    await batchRemoveLessonList(ids); //批量删除数据
+    message.success("删除数据成功...");
   };
   //显示添加课程
   //使用withRouter来实现路由的三大属性
@@ -89,9 +86,21 @@ class List extends Component {
       lesson: {}, //将less数据重置
     });
   };
+  //全屏
+  screenfull=()=>{
+    //通过ref来获取真实的dom元素
+    const dom =this.props.fullscreenRef.current
+    
+    screenfull.toggle(dom);//切换全屏显示
+  }
   render() {
     const { chapters } = this.props;
-    const { expandedRowKeys, isShowVideoModal, lesson,selectedRowKeys } = this.state;
+    const {
+      expandedRowKeys,
+      isShowVideoModal,
+      lesson,
+      selectedRowKeys,
+    } = this.state;
     const columns = [
       {
         title: "名称",
@@ -163,9 +172,11 @@ class List extends Component {
               <PlusOutlined />
               新增
             </Button>
-            <Button type="danger" onClick={this.batchRemove}>批量删除</Button>
+            <Button type="danger" onClick={this.batchRemove}>
+              批量删除
+            </Button>
             <Tooltip title="全屏">
-              <FullscreenOutlined />
+              <FullscreenOutlined onClick={this.screenfull} />
             </Tooltip>
             <Tooltip title="刷新一下">
               <ReloadOutlined />
@@ -175,12 +186,17 @@ class List extends Component {
             </Tooltip>
           </div>
         </div>
-        <Alert message={`已经选择${selectedRowKeys.length}项`} type="info" showIcon />
+        <Alert
+          message={`已经选择${selectedRowKeys.length}项`}
+          type="info"
+          showIcon
+        />
         <Table
           className="chapter-list-table"
           columns={columns} // 决定列头
-          rowSelection={{//左边的勾选框
-           selectedRowKeys,
+          rowSelection={{
+            //左边的勾选框
+            selectedRowKeys,
             onChange: this.onSelectChange,
           }}
           expandable={{

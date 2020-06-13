@@ -3,12 +3,12 @@ import {
   getAllCourseList,
   getChapterList,
   getLessonList,
-  //batchRemoveLessonList,
+  batchRemoveLessonList,
 } from "./actions";
 export {
   chapter,
   getAllCourseList,
   getChapterList,
   getLessonList,
- // batchRemoveLessonList,
+  batchRemoveLessonList,
 };

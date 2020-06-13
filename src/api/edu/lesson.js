@@ -31,7 +31,7 @@ export function reqAddLesson({ chapterId, title, free, video }) {
   });
 }
 //删除多个课时列表信息
-/* export function reqBatchRemoveLessonList(idList) {
+export function reqBatchRemoveLessonList(idList) {
   return request({
     url: `${BASE_URL}/batchRemove`,
     method: "DELETE",
@@ -39,4 +39,4 @@ export function reqAddLesson({ chapterId, title, free, video }) {
       idList,
     },
   });
-} */
+}

@@ -7,8 +7,6 @@ import {
   GET_LESSON_LIST,
   BATCH_REMOVE_LESSON_LIST
 } from "./constants";
-import { response } from "express";
-//import { response } from 'express'
 //请求所有课程数据
 const getAllCourseListSync = (courseList) => ({
   type: GET_ALL_COURSE_LIST,
@@ -50,7 +48,7 @@ export const getLessonList = (chapterId) => {
   };
 };
 //删除课时数据
-/* const batchRemoveLessonListSync=(idList)=>({
+const batchRemoveLessonListSync=(idList)=>({
   type: BATCH_REMOVE_LESSON_LIST,
   data:idList
 })
@@ -61,4 +59,4 @@ export const batchRemoveLessonList=(idList)=>{
       return idList
     })
   }
-} */
+}

@@ -2,7 +2,7 @@ import {
   GET_ALL_COURSE_LIST,
   GET_CHAPTER_LIST,
   GET_LESSON_LIST,
- // BATCH_REMOVE_LESSON_LIST,
+ BATCH_REMOVE_LESSON_LIST,
 } from "./constants";
 const initChapter = {
   allCourseList: [],
@@ -47,7 +47,7 @@ export default function chapter(prevState = initChapter, action) {
           }),
         },
       };
-   /*  case BATCH_REMOVE_LESSON_LIST:
+    case BATCH_REMOVE_LESSON_LIST:
       return {
         ...prevState,
         chapters: {
@@ -65,7 +65,7 @@ export default function chapter(prevState = initChapter, action) {
             };
           }),
         },
-      }; */
+      };
     default:
       return prevState;
   }
