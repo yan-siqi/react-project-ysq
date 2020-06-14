@@ -6,17 +6,13 @@ import {
   UploadOutlined,
   PlusOutlined,
   FullscreenOutlined,
-  // FullscreenExitOutlined,
   RedoOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-
 import { connect } from "react-redux";
 import Search from "./components/Search";
 import { getCourseList } from "./redux";
-
 import "./index.less";
-
 @connect(
   (state) => ({
     courseList: state.courseList,
@@ -55,8 +51,6 @@ class Course extends Component {
   };
 
   renderTableItem = () => {
-    // const { permissionValueList } = this.props;
-
     return (
       <div>
         <Tooltip title="发布课程">
@@ -129,10 +123,10 @@ class Course extends Component {
       dataIndex: "price",
       render: (text) => <span>{`￥ ${text}`}</span>,
       width: 120,
-      // sorter: {
-      //   compare: (a, b) => b.price - a.price,
-      // },
-      sorter: true, // 后台排序~
+      sorter: {
+        compare: (a, b) => b.price - a.price,
+      },
+      //sorter: true, // 后台排序~
     },
     {
       title: "课程讲师",
@@ -151,7 +145,7 @@ class Course extends Component {
       render: (text) => <span>{`${text} 小时`}</span>,
       sorter: {
         compare: (a, b) => b.lessonNum - a.lessonNum,
-      },
+      }, //前台排序
     },
     {
       title: "总阅读量",
@@ -184,14 +178,11 @@ class Course extends Component {
       title: "操作",
       render: this.renderTableItem,
       width: 200,
-      fixed: "right", // 固定在右侧
+      fixed: "right", // 是为了让操作的属性一直固定在右边
     },
   ];
 
-  componentDidMount() {
-    // const { page, limit } = this.state;
-    // this.handleTableChange(page, limit);
-  }
+  componentDidMount() {}
 
   handleTableChange = (page, limit) => {
     // 切换loading状态
@@ -279,13 +270,13 @@ class Course extends Component {
               pageSizeOptions: ["5", "10", "20", "30", "40", "50", "100"],
               showQuickJumper: true,
               showSizeChanger: true,
-              total: courseList.total,
+              total: courseList.total,//所有的课程列表数据
               onChange: this.handleTableChange,
               onShowSizeChange: this.handleTableChange,
             }}
             loading={tableLoading}
             scroll={{ x: 1200 }}
-            onChange={this.sortTable}
+            onChange={this.sortTable}//排序
           />
         </div>
 
