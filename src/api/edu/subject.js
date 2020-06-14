@@ -18,29 +18,38 @@ export function reqGetSubSubjectList(parentId) {
   });
 }
 //添加请求数据
-export function reqAddSubject(title,parentId){
+export function reqAddSubject(title, parentId) {
   return request({
-    url:`${BASE_URL}/save`,
-    method:'POST',
-    data:{
-      title,parentId
-    }
-  })
+    url: `${BASE_URL}/save`,
+    method: "POST",
+    data: {
+      title,
+      parentId,
+    },
+  });
 }
 //跟新课程分类数据
-export function reqUpdateSubject(title,id){
-  return request ({
-    url:`${BASE_URL}/update`,
-    method:'PUT',
-    data:{
-      title,id
-    }
-  })
+export function reqUpdateSubject(title, id) {
+  return request({
+    url: `${BASE_URL}/update`,
+    method: "PUT",
+    data: {
+      title,
+      id,
+    },
+  });
 }
 //删除课程分类数据
-export function reqDelSubject(id){
+export function reqDelSubject(id) {
   return request({
-    url:`${BASE_URL}/remove/${id}`,
-    method:'DELETE'
+    url: `${BASE_URL}/remove/${id}`,
+    method: "DELETE",
+  });
+}
+//获取所有一级课程列表
+export function reqGetAllSubjectList() {
+  return request({
+    url:`${BASE_URL}`,
+    method:"GET"
   })
 }
