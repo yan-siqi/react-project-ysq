@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 
 import loading from "./loading";
 import token from "./login";
-
+import language from "./lang";
 import { user } from "@comps/Authorized/redux";
 import { userList } from "@pages/Acl/User/redux";
 import { roleList } from "@pages/Acl/Role/redux";
@@ -19,5 +19,6 @@ export default combineReducers({
   menuList,
   subjectList,
   chapter,
-  courseList
+  courseList,
+  language
 });

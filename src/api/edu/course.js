@@ -9,12 +9,12 @@ export function reqGetAllCourseList(){
     })
 }
 //请求获取所有分页列表数据
-export function reqGetCourseList({page,limit,teacherId,subjectId,subjectParentId,title}) {
+export function reqGetCourseList({page,limit,teacherId,subjectId,subjectParentId,title,sortBy,sort}) {
     return request({
         url:`${BASE_URL}/${page}/${limit}`,
         method:'GET',
         params:{
-            teacherId,subjectId,subjectParentId,title
+            teacherId,subjectId,subjectParentId,title,sortBy,sort
         }
     })
     
