@@ -1,16 +1,11 @@
-import { CHANGE_LANGUAGE } from "../constants/lang";
 
-// 初始化从浏览器中加载语言环境~
-const initLang = window.navigator.language === "en" ? "en" : "zh";
-
-export default function language(prevState = initLang, action) {
-  switch (action.type) {
+import {CHANGE_LANGUAGE} from '../constants/lang'
+const initLang =window.navigator.language==='en'?'en':'zh'//定义初始化数据
+export default function  language(prevState=initLang,action) {
+  switch (action.type){
     case CHANGE_LANGUAGE:
-      return action.data;
-    default:
-      return prevState;
+      return action.data 
+      default:
+        return prevState
   }
 }
-/* 
-晚自习重新写一遍
-*/
