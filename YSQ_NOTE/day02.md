@@ -87,3 +87,31 @@
 
 - 添加
   - 在antd中 推荐使用工厂函数组件 来实现form表单
+
+## 表单校验规则
+
+ 表单校验有三种写法：
+    1. rules(如果多个表单校验规则一模一样)
+      <Form.Item
+        name="username"
+        rules={[
+          { required: true, message: "请输入用户名" },
+          { max: 15, message: "输入的长度不能超过15位" },
+          { min: 4, message: "输入的长度不能小于4位" },
+          {
+            pattern: /^[a-zA-Z0-9_]+$/,
+            message: "输入内容只能包含数字、英文和下划线",
+          },
+        ]}
+      >
+   2. 自定义校验规则 validator(如果多个表单校验规则有差异)
+      <Form.Item
+        name="username"
+        rules={[
+          { validator: validator },
+        ]}
+      > 
+      const validator = (rule, value) => {}
+        
+    3. rules + validateMessages（校验规则一样，但是message信息不一样）
+      主要目的是为了复用 messages
