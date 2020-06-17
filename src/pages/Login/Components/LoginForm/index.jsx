@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom"; //变成路由组件
 import { login, mobileLogin } from "@redux/actions/login";
 import { reqSendCode } from "@api/acl/oauth";
+import { CLIENT_ID } from "@conf/oauth"; //授权
 import "./index.less";
 const { TabPane } = Tabs;
 const reg = /^[a-zA-Z0-9_]+$/;
@@ -28,7 +29,7 @@ const rules = [
 
 const TOTAL_TIME = 60; //定义总时长
 let countingDownTime = TOTAL_TIME; //倒计时60s
-function LoginForm({ login,mobileLogin,history }) {
+function LoginForm({ login, mobileLogin, history }) {
   const [form] = Form.useForm(); //form表单提供数据
   const [, setCountingDownTime] = useState(0); //只传更新组件的方法,不需要数据
   const [isSendCode, setIsSendCode] = useState(false); //判断是否已经发送了验证码
@@ -70,7 +71,7 @@ function LoginForm({ login,mobileLogin,history }) {
           const token = await login(username, password); //发送请求,登录系统
           if (rem) {
             localStorage.setItem("user_token", token); //在本地进行持久化存储
-            console.log(token)
+            console.log(token);
           }
           history.replace("/"); //登录成功之后跳转到首页
         });
@@ -97,7 +98,7 @@ function LoginForm({ login,mobileLogin,history }) {
         return;
       }
       setCountingDownTime(countingDownTime); //重新渲染组件
-    },1000);
+    }, 1000);
   };
   const sendCode = () => {
     //点击发送验证码
@@ -113,9 +114,15 @@ function LoginForm({ login,mobileLogin,history }) {
         //提示错误信息
       });
   };
+  //跳转到github的授权地址
+  const goGitHub = () => {
+    //基础地址:https://github.com/login/oauth/authorize
+    //参数:client_id(query参数)
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`;
+  };
   return (
     <Form
-    form={form}
+      form={form}
       validateMessages={validateMessages}
       initialValues={{ rem: "cheked" }}
     >
@@ -199,7 +206,7 @@ function LoginForm({ login,mobileLogin,history }) {
           <Form.Item>
             <div className="login-form-icons">
               <span>其他登录方式</span>
-              <GithubOutlined className="icons" />
+              <GithubOutlined className="icons"  onClick={goGitHub} />
               <WechatOutlined className="icons" />
               <QqOutlined className="icons" />
             </div>
@@ -214,4 +221,4 @@ function LoginForm({ login,mobileLogin,history }) {
     </Form>
   );
 }
-export default withRouter(connect(null, { login,mobileLogin })(LoginForm));
+export default withRouter(connect(null, { login, mobileLogin })(LoginForm));

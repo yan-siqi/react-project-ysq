@@ -3,7 +3,7 @@ import {reqMobileLogin} from "@api/acl/oauth"
 import {LOGIN,LOGOUT} from '../constants/login'
 //账户名密码登录
 //同步action
-const loginSync=(token)=>({
+ export const loginSync=(token)=>({
   type:LOGIN,
   data:token
 })
